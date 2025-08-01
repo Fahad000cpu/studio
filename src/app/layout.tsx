@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'bond',
+  title: 'VibrantHub',
   description: 'A simple chat application with AI-powered smart replies.',
 };
 
