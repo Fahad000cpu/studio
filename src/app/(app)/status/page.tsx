@@ -1,3 +1,4 @@
+
 import { getSession } from '@/lib/actions';
 import { users } from '@/lib/data';
 import type { User } from '@/lib/data';
@@ -5,6 +6,9 @@ import { redirect } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
+import { PlusCircle, Search, MoreVertical } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 export default async function StatusPage() {
   const session = await getSession();
@@ -23,65 +27,92 @@ export default async function StatusPage() {
     { user: users[0], image: 'https://placehold.co/300x500.png', story: 'Enjoying the beautiful sunset!', dataAiHint: 'sunset landscape' },
     { user: users[2], image: 'https://placehold.co/300x500.png', story: 'My new coding setup. #developer', dataAiHint: 'computer desk' },
     { user: users[4], image: 'https://placehold.co/300x500.png', story: 'Just climbed a mountain!', dataAiHint: 'mountain view' },
+    { user: users[1], image: 'https://placehold.co/300x500.png', story: 'Exploring the city', dataAiHint: 'city street' },
+    { user: users[3], image: 'https://placehold.co/300x500.png', story: 'A delicious meal', dataAiHint: 'food plate' },
+  ];
+
+  const channels = [
+    { name: 'MyGov India', followers: '38M', image: 'https://placehold.co/40x40.png', dataAiHint: 'government building', verified: true, message: 'For previous trivia Correct Answer: D)...' },
+    { name: 'अंग्रेजी बोलना सीखो', followers: '12.3M', image: 'https://placehold.co/40x40.png', dataAiHint: 'owl logo', verified: true },
+    { name: 'कड़वा सच', followers: '8.5M', image: 'https://placehold.co/40x40.png', dataAiHint: 'theater masks', verified: true },
+    { name: 'Quotes', followers: '483K', image: 'https://placehold.co/40x40.png', dataAiHint: 'quotes logo', verified: false },
   ];
 
   return (
-    <div className="flex h-screen flex-col">
-      <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:h-[60px] lg:px-6">
-        <div className="w-full flex-1">
-          <h1 className="text-lg font-semibold md:text-2xl">Status Updates</h1>
-          <p className="text-sm text-muted-foreground">See what your friends are up to.</p>
+    <div className="flex h-screen flex-col bg-background">
+      <header className="flex h-14 items-center justify-between gap-4 border-b bg-background px-4 lg:h-[60px] lg:px-6 sticky top-0 z-10">
+        <h1 className="text-lg font-semibold md:text-2xl">Updates</h1>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon"><Search className="h-5 w-5"/></Button>
+          <Button variant="ghost" size="icon"><MoreVertical className="h-5 w-5"/></Button>
         </div>
       </header>
-      <main className="flex-1 overflow-y-auto p-4 md:p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <Card className="group">
-            <CardHeader className="p-0 relative h-48">
-              <Image
-                src={`https://placehold.co/300x500.png`}
-                alt="My Status"
-                width={300}
-                height={500}
-                data-ai-hint="abstract background"
-                className="w-full h-full object-cover rounded-t-lg"
-              />
-               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <button className="flex flex-col items-center justify-center text-white bg-black/30 rounded-full h-20 w-20 border-2 border-dashed border-white">
-                    <span>Add</span>
-                  </button>
+      <main className="flex-1 overflow-y-auto">
+        <div className="p-4 md:p-6 space-y-6">
+          <section>
+            <h2 className="text-base font-semibold mb-2 px-2">Status</h2>
+            <ScrollArea className="w-full whitespace-nowrap">
+                <div className="flex gap-4 pb-4 px-2">
+                    <div className="flex-shrink-0 w-24 text-center space-y-1">
+                        <div className="relative">
+                            <Avatar className="h-16 w-16 mx-auto border-2 border-dashed border-muted-foreground">
+                                <AvatarImage src={loggedInUser.avatar} alt="My Status" data-ai-hint="person portrait"/>
+                                <AvatarFallback>{loggedInUser.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <button className="absolute bottom-0 right-3 bg-primary text-primary-foreground rounded-full h-6 w-6 flex items-center justify-center">
+                                <PlusCircle className="h-4 w-4"/>
+                            </button>
+                        </div>
+                        <p className="text-xs font-medium">Add status</p>
+                    </div>
+                    {statuses.map((status, index) => (
+                        <div key={index} className="flex-shrink-0 w-24 text-center space-y-1">
+                            <div className="relative inline-block">
+                               <Avatar className="h-16 w-16 mx-auto border-2 border-green-500">
+                                <AvatarImage src={status.user.avatar} alt={status.user.name} data-ai-hint="person portrait"/>
+                                <AvatarFallback>{status.user.name.charAt(0)}</AvatarFallback>
+                               </Avatar>
+                            </div>
+                            <p className="text-xs truncate">{status.user.name}</p>
+                        </div>
+                    ))}
                 </div>
-            </CardHeader>
-            <CardContent className="p-4">
-              <CardTitle className="text-base">My Status</CardTitle>
-              <p className="text-sm text-muted-foreground">Tap to add a new update</p>
-            </CardContent>
-          </Card>
-          {statuses.map((status) => (
-            <Card key={status.user.email} className="group overflow-hidden">
-              <CardHeader className="p-0 relative h-48">
-                <Image
-                  src={status.image}
-                  alt={status.story}
-                  width={300}
-                  height={500}
-                  data-ai-hint={status.dataAiHint}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                   <Avatar className="h-10 w-10 border-2 border-primary">
-                    <AvatarImage src={status.user.avatar} alt={status.user.name} data-ai-hint="person portrait" />
-                    <AvatarFallback>{status.user.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                </div>
-                 <p className="absolute bottom-4 right-4 text-xs text-white bg-black/50 px-2 py-1 rounded-full">{status.story}</p>
-              </CardHeader>
-               <CardContent className="p-4">
-                <CardTitle className="text-base truncate">{status.user.name}</CardTitle>
-                <p className="text-sm text-muted-foreground">Viewed 2 hours ago</p>
-              </CardContent>
-            </Card>
-          ))}
+                <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </section>
+
+          <div className="border-b"></div>
+
+          <section>
+            <div className="flex justify-between items-center mb-2 px-2">
+              <h2 className="text-base font-semibold">Channels</h2>
+              <Button variant="ghost" size="sm">Explore</Button>
+            </div>
+            <div className="space-y-4">
+                 {channels.map((channel) => (
+                    <div key={channel.name} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
+                        <div className="flex items-center gap-3">
+                            <Avatar className="h-10 w-10">
+                                <AvatarImage src={channel.image} alt={channel.name} data-ai-hint={channel.dataAiHint}/>
+                                <AvatarFallback>{channel.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                                <div className="flex items-center gap-1">
+                                    <p className="font-semibold">{channel.name}</p>
+                                    {channel.verified && <svg viewBox="0 0 16 16" className="h-4 w-4 fill-green-500"><path d="M15.55,8.85L13,8,15.5,7.12A1.25,1.25,0,0,0,14.45,6L11,7.5,9.5,4.1a1.25,1.25,0,0,0-2.3,0L5.7,7.5,2.2,6A1.25,1.25,0,0,0,1.15,7.12L3.6,8,1.1,8.85A1.25,1.25,0,0,0,2.2,10L5.7,8.5,7.2,11.9a1.25,1.25,0,0,0,2.3,0L11,8.5,14.45,10A1.25,1.25,0,0,0,15.55,8.85Z"></path></svg>}
+                                </div>
+                               {channel.message ? (
+                                    <p className="text-sm text-muted-foreground truncate">{channel.message}</p>
+                                ) : (
+                                    <p className="text-sm text-muted-foreground">{channel.followers} followers</p>
+                                )}
+                            </div>
+                        </div>
+                        <Button variant="outline" size="sm">Follow</Button>
+                    </div>
+                ))}
+            </div>
+          </section>
         </div>
       </main>
     </div>
