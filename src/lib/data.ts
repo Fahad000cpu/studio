@@ -1,3 +1,4 @@
+
 export type User = {
   name: string
   avatar: string
@@ -11,6 +12,21 @@ export type Message = {
   text: string
   timestamp: number
 }
+
+export type StatusItem = {
+  id: string;
+  type: 'image' | 'video';
+  url: string;
+  duration: number; // in milliseconds
+  dataAiHint?: string;
+};
+
+export type Status = {
+  id: string;
+  user: User;
+  items: StatusItem[];
+  timestamp: string;
+};
 
 export const users: User[] = [
   { name: 'Alice', avatar: 'https://placehold.co/100x100.png', email: 'alice@example.com', online: true },
