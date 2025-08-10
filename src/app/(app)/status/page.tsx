@@ -1,4 +1,3 @@
-
 'use client';
 
 import { getSession } from '@/lib/actions';
@@ -13,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { useState, useEffect } from 'react';
 import { StatusViewer } from '@/components/status/status-viewer';
+import Link from 'next/link';
 
 const initialStatuses: StatusType[] = [
   { 
@@ -146,7 +146,9 @@ export default function StatusPage() {
             <section>
               <div className="flex justify-between items-center mb-2 px-2">
                 <h2 className="text-base font-semibold">Channels</h2>
-                <Button variant="ghost" size="sm">Explore</Button>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/status/find-channels">Explore</Link>
+                </Button>
               </div>
               <div className="space-y-4">
                   {channels.map((channel) => (
